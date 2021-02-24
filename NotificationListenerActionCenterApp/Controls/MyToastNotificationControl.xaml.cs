@@ -75,6 +75,7 @@ namespace NotificationListenerActionCenterApp.Controls
 
                 else
                 {
+                    //TODO: HERE!!! WOO HOO!!
                     textElements = binding.GetTextElements().Where(i => !string.IsNullOrWhiteSpace(i.Text)).Select(i => i.Text).ToArray();
                 }
             }
