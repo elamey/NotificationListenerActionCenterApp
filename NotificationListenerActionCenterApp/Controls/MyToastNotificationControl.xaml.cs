@@ -138,11 +138,16 @@ namespace NotificationListenerActionCenterApp.Controls
                 AppInfo appInfo = UserNotification.AppInfo;
                 RandomAccessStreamReference streamReference = appInfo.DisplayInfo.GetLogo(new Size(16, 16));
 
-                // In an actual app, we would probably load these images before the notification is displayed
-                // so that the images don't pop in
-                BitmapImage appLogo = new BitmapImage();
-                this.ImageAppIcon.Source = appLogo;
-                await appLogo.SetSourceAsync(await streamReference.OpenReadAsync());
+            // In an actual app, we would probably load these images before the notification is displayed
+            // so that the images don't pop in
+
+            if (streamReference != null)
+            {
+               BitmapImage appLogo = new BitmapImage();
+               this.ImageAppIcon.Source = appLogo;
+               await appLogo.SetSourceAsync(await streamReference.OpenReadAsync());
+            }
+
             }
 
             catch { }

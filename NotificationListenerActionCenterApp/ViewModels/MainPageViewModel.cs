@@ -120,8 +120,10 @@ namespace NotificationListenerActionCenterApp.ViewModels
                 {
                     UserNotification existingNotif = this.Notifications[i];
 
-                    // If not in platform anymore, remove from our list
-                    if (!notifsInPlatform.Any(n => n.Id == existingNotif.Id))
+              
+
+               // If not in platform anymore, remove from our list
+               if (!notifsInPlatform.Any(n => n.Id == existingNotif.Id))
                     {
                         this.Notifications.RemoveAt(i);
                         i--;
@@ -134,7 +136,7 @@ namespace NotificationListenerActionCenterApp.ViewModels
                 for (int i = 0; i < notifsInPlatform.Count; i++)
                 {
                     UserNotification platNotif = notifsInPlatform[i];
-
+             
                     int indexOfExisting = FindIndexOfNotification(platNotif.Id);
 
                     // If we have an existing
