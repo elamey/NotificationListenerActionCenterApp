@@ -99,10 +99,8 @@
       <DependentUpon>MyToastNotificationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
-    <Compile Include="FileService.cs" />
     <Compile Include="Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Helpers\BindableBase.cs" />
-    <Compile Include="IFileService.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

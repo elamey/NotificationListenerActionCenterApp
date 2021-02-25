@@ -4,8 +4,7 @@
    xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" 
    xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
    xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
-   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
-   IgnorableNamespaces="uap mp uap3 rescap">
+   IgnorableNamespaces="uap mp uap3">
   <Identity Name="dd85a310-3d18-4432-b105-0a63a0eb4349" Publisher="CN=anbare" Version="1.0.8.0" />
   <mp:PhoneIdentity PhoneProductId="dd85a310-3d18-4432-b105-0a63a0eb4349" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
@@ -30,8 +29,7 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
-    <rescap:Capability Name="broadFileSystemAccess" />
-    <uap:Capability Name="removableStorage"/>
     <uap3:Capability Name="userNotificationListener"/>
+    <uap:Capability Name="picturesLibrary"/>
   </Capabilities>
 </Package>

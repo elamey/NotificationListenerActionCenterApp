@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
+using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI.Notifications.Management;
 using Windows.UI.Popups;
@@ -32,7 +34,7 @@ namespace NotificationListenerActionCenterApp.ViewModels
             Initialize();
         }
 
-        private async void Initialize()
+      private async void Initialize()
         {
             try
             {
@@ -45,7 +47,27 @@ namespace NotificationListenerActionCenterApp.ViewModels
                 return;
             }
 
-            try
+            var picLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+            string path = picLibrary.SaveFolder.Path;
+            string name = "ZLog.csv";
+            StorageFolder folder = KnownFolders.PicturesLibrary;
+            var tRes = folder.TryGetItemAsync(name);
+            await Task.Delay(1000);
+            var outputFile = tRes.GetResults();
+
+            if (outputFile is null == false)
+            {
+               StorageFolder storage = KnownFolders.PicturesLibrary;
+               StorageFile zlogFile = await storage.GetFileAsync(name);
+               await zlogFile.DeleteAsync();
+               await Task.Delay(1000);
+               await storage.CreateFileAsync(name, CreationCollisionOption.OpenIfExists);
+               await Task.Delay(1000);
+            }
+
+ 
+
+         try
             {
                 _listener = UserNotificationListener.Current;
 

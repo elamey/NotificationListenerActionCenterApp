@@ -25,7 +25,8 @@ namespace NotificationListenerActionCenterApp.Controls
 {
     public sealed partial class MyToastNotificationControl : UserControl
     {
-        public MyToastNotificationControl()
+
+      public MyToastNotificationControl()
         {
             this.InitializeComponent();
         }
@@ -59,9 +60,11 @@ namespace NotificationListenerActionCenterApp.Controls
             UpdateTextContent();
         }
 
-        private async void UpdateTextContent()
+        private async Task UpdateTextContent()
         {
             this.StackPanelTextElements.Children.Clear();
+            
+            List<string> textList = new List<string>(); 
 
             string[] textElements = null;
 
@@ -83,13 +86,17 @@ namespace NotificationListenerActionCenterApp.Controls
             }
 
             catch (Exception ex) { textElements = new string[] { "Exception: " + ex.ToString() }; }
-            
+
             for (int i = 0; i < textElements.Length; i++)
             {
             string text = textElements[i];
 
-            var result = WriteToFile(text);
-            
+            //textList.Add(DateTime.Now.ToString("mm.dd.yyyy HH:mm:ss:ff,") + text);
+            string wt = DateTime.Now.ToString("MM.dd.yyyy HH:mm:ss:ff,") + text + Environment.NewLine;
+            Task t = WriteToFile(wt);
+            t.Wait();
+            //await WriteToFile(DateTime.Now.ToString("mm.dd.yyyy HH:mm:ss:ff,") + text);
+
             TextBlock tb = new TextBlock()
                 {
                     Text = text,
@@ -102,9 +109,33 @@ namespace NotificationListenerActionCenterApp.Controls
 
                 this.StackPanelTextElements.Children.Add(tb);
             }
+
+         //if (textList.Count > 0)
+         //{
+         //   int result = textList.Count;
+         //   await WriteToFile(textList);
+         //   await Task.Delay(1000);
+         //}
+  
+    
         }
 
-        private void UpdateTimeStamp()
+      private async static Task<Task> WriteToFile(string text)
+      {
+         
+         StorageFolder storage = KnownFolders.PicturesLibrary;
+         string name = "ZLog.csv";
+         StorageFile sampleFile = await storage.GetFileAsync(name).AsTask().ConfigureAwait(false);
+         Task t = FileIO.AppendTextAsync(sampleFile, text, UnicodeEncoding.Utf8).AsTask();
+         t.Wait();
+         return t;
+         //int x = 1;
+         //Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.RoamingFolder;
+         //StorageFile sampleFile = await localFolder.CreateFileAsync("ZLog.csv", CreationCollisionOption.OpenIfExists);
+         //await FileIO.AppendLinesAsync(sampleFile, text, UnicodeEncoding.Utf8);
+      }
+
+      private void UpdateTimeStamp()
         {
             try
             {
@@ -158,28 +189,11 @@ namespace NotificationListenerActionCenterApp.Controls
             catch { }
         }
 
-      public async Task WriteToFile(string text)
-      {
-          text = DateTime.Now.ToString("MM.dd.yyyy_HH.mm.ss,") + text;
-          StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/ZLog.txt"));
-          string fileName = file.Path;
-          await Task.Run(() =>
-         {
-            Task.Yield();
-            using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
-            {
-               using (StreamWriter sw = new StreamWriter(fs))
-               {
-                  sw.WriteLineAsync(text);
-               } // output is disposed here
-            } // input is disposed here
-         });
          //string speakText = text.Replace("Zalmys VIP stock picks", "");
          //MediaElement mediaElement = new MediaElement();
          //var synth = new Windows.Media.SpeechSynthesis.SpeechSynthesizer();
          //Windows.Media.SpeechSynthesis.SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync(speakText);
          //mediaElement.SetSource(stream, stream.ContentType);
          //mediaElement.Play();
-      }
    }
 }
