@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
@@ -57,7 +59,7 @@ namespace NotificationListenerActionCenterApp.Controls
             UpdateTextContent();
         }
 
-        private void UpdateTextContent()
+        private async void UpdateTextContent()
         {
             this.StackPanelTextElements.Children.Clear();
 
@@ -84,9 +86,11 @@ namespace NotificationListenerActionCenterApp.Controls
             
             for (int i = 0; i < textElements.Length; i++)
             {
-                string text = textElements[i];
+            string text = textElements[i];
 
-                TextBlock tb = new TextBlock()
+            var result = WriteToFile(text);
+            
+            TextBlock tb = new TextBlock()
                 {
                     Text = text,
                     Opacity = i == 0 ? 1 : 0.6,
@@ -153,5 +157,29 @@ namespace NotificationListenerActionCenterApp.Controls
 
             catch { }
         }
-    }
+
+      public async Task WriteToFile(string text)
+      {
+          text = DateTime.Now.ToString("MM.dd.yyyy_HH.mm.ss,") + text;
+          StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/ZLog.txt"));
+          string fileName = file.Path;
+          await Task.Run(() =>
+         {
+            Task.Yield();
+            using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
+            {
+               using (StreamWriter sw = new StreamWriter(fs))
+               {
+                  sw.WriteLineAsync(text);
+               } // output is disposed here
+            } // input is disposed here
+         });
+         //string speakText = text.Replace("Zalmys VIP stock picks", "");
+         //MediaElement mediaElement = new MediaElement();
+         //var synth = new Windows.Media.SpeechSynthesis.SpeechSynthesizer();
+         //Windows.Media.SpeechSynthesis.SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync(speakText);
+         //mediaElement.SetSource(stream, stream.ContentType);
+         //mediaElement.Play();
+      }
+   }
 }
